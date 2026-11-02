@@ -1,0 +1,9 @@
+body{font-family:system-ui;background:#0f172a;color:white;margin:0;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin-top:20px}
+.card{background:#1e293b;border-radius:12px;overflow:hidden;border:1px solid #334155}
+.card img{width:100%;height:140px;object-fit:cover}
+.card-body{padding:12px}
+.skeleton{background:#1e293b;border-radius:12px;height:200px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%{opacity:.6}50%{opacity:1}100%{opacity:.6}}
+input,select{padding:8px 12px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:white}
+button{cursor:pointer}
