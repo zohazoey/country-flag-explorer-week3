@@ -1,0 +1,79 @@
+import { useState, useEffect } from 'react'
+
+const countries = [
+  {name:"Pakistan",code:"PK",region:"Asia",capital:"Islamabad",pop:"240M",flag:"https://flagcdn.com/w320/pk.png"},
+  {name:"India",code:"IN",region:"Asia",capital:"New Delhi",pop:"1.4B",flag:"https://flagcdn.com/w320/in.png"},
+  {name:"United States",code:"US",region:"Americas",capital:"Washington D.C.",pop:"340M",flag:"https://flagcdn.com/w320/us.png"},
+  {name:"United Kingdom",code:"GB",region:"Europe",capital:"London",pop:"67M",flag:"https://flagcdn.com/w320/gb.png"},
+  {name:"Japan",code:"JP",region:"Asia",capital:"Tokyo",pop:"124M",flag:"https://flagcdn.com/w320/jp.png"},
+  {name:"Germany",code:"DE",region:"Europe",capital:"Berlin",pop:"84M",flag:"https://flagcdn.com/w320/de.png"},
+  {name:"France",code:"FR",region:"Europe",capital:"Paris",pop:"68M",flag:"https://flagcdn.com/w320/fr.png"},
+  {name:"Canada",code:"CA",region:"Americas",capital:"Ottawa",pop:"40M",flag:"https://flagcdn.com/w320/ca.png"},
+  {name:"Australia",code:"AU",region:"Oceania",capital:"Canberra",pop:"26M",flag:"https://flagcdn.com/w320/au.png"},
+  {name:"Brazil",code:"BR",region:"Americas",capital:"Brasília",pop:"215M",flag:"https://flagcdn.com/w320/br.png"},
+  {name:"Italy",code:"IT",region:"Europe",capital:"Rome",pop:"59M",flag:"https://flagcdn.com/w320/it.png"},
+  {name:"Turkey",code:"TR",region:"Asia",capital:"Ankara",pop:"85M",flag:"https://flagcdn.com/w320/tr.png"},
+  {name:"Saudi Arabia",code:"SA",region:"Asia",capital:"Riyadh",pop:"36M",flag:"https://flagcdn.com/w320/sa.png"},
+  {name:"China",code:"CN",region:"Asia",capital:"Beijing",pop:"1.4B",flag:"https://flagcdn.com/w320/cn.png"},
+  {name:"South Korea",code:"KR",region:"Asia",capital:"Seoul",pop:"52M",flag:"https://flagcdn.com/w320/kr.png"},
+  {name:"Mexico",code:"MX",region:"Americas",capital:"Mexico City",pop:"129M",flag:"https://flagcdn.com/w320/mx.png"},
+  {name:"Spain",code:"ES",region:"Europe",capital:"Madrid",pop:"47M",flag:"https://flagcdn.com/w320/es.png"},
+  {name:"Egypt",code:"EG",region:"Africa",capital:"Cairo",pop:"106M",flag:"https://flagcdn.com/w320/eg.png"},
+  {name:"Nigeria",code:"NG",region:"Africa",capital:"Abuja",pop:"223M",flag:"https://flagcdn.com/w320/ng.png"},
+  {name:"South Africa",code:"ZA",region:"Africa",capital:"Pretoria",pop:"60M",flag:"https://flagcdn.com/w320/za.png"},
+  {name:"Russia",code:"RU",region:"Europe",capital:"Moscow",pop:"144M",flag:"https://flagcdn.com/w320/ru.png"},
+  {name:"Indonesia",code:"ID",region:"Asia",capital:"Jakarta",pop:"277M",flag:"https://flagcdn.com/w320/id.png"},
+  {name:"Argentina",code:"AR",region:"Americas",capital:"Buenos Aires",pop:"46M",flag:"https://flagcdn.com/w320/ar.png"},
+  {name:"Sweden",code:"SE",region:"Europe",capital:"Stockholm",pop:"10M",flag:"https://flagcdn.com/w320/se.png"},
+  {name:"New Zealand",code:"NZ",region:"Oceania",capital:"Wellington",pop:"5M",flag:"https://flagcdn.com/w320/nz.png"},
+];
+
+export default function App(){
+  const [loading,setLoading]=useState(true)
+  const [search,setSearch]=useState('')
+  const [region,setRegion]=useState('All')
+  const [favs,setFavs]=useState([])
+  const [showFav,setShowFav]=useState(false)
+  
+  useEffect(()=>{setTimeout(()=>setLoading(false),1200)},[])
+  
+  const toggleFav=(code)=>{
+    setFavs(f=>f.includes(code)?f.filter(c=>c!==code):[...f,code])
+  }
+  
+  const filtered = countries.filter(c=>{
+    if(showFav && !favs.includes(c.code)) return false
+    if(region!=='All' && c.region!==region) return false
+    if(search && !c.name.toLowerCase().includes(search.toLowerCase())) return false
+    return true
+  })
+
+  return (
+    <div>
+      <h1>🌍 Country Flag Explorer - Week 3</h1>
+      <p>25 Countries • Search • Filter • Favorites • Skeleton Loading</p>
+      <div style={{display:'flex',gap:10,flexWrap:'wrap',margin:'16px 0'}}>
+        <input placeholder="Search..." value={search} onChange={e=>setSearch(e.target.value)} />
+        <select value={region} onChange={e=>setRegion(e.target.value)}>
+          <option>All</option><option>Asia</option><option>Europe</option><option>Americas</option><option>Africa</option><option>Oceania</option>
+        </select>
+        <label><input type="checkbox" checked={showFav} onChange={e=>setShowFav(e.target.checked)}/> Favorites ({favs.length})</label>
+      </div>
+      <div className="grid">
+        {loading? Array.from({length:8}).map((_,i)=><div key={i} className="skeleton"></div>):
+          filtered.map(c=>(
+            <div key={c.code} className="card">
+              <img src={c.flag} alt={c.name} loading="lazy"/>
+              <div className="card-body">
+                <h3 style={{margin:'0 0 6px'}}>{c.name}</h3>
+                <p style={{margin:0,fontSize:13,opacity:.8}}>{c.capital} • {c.region} • {c.pop}</p>
+                <button onClick={()=>toggleFav(c.code)} style={{marginTop:10,padding:'6px 10px',borderRadius:8,border:'none',background:favs.includes(c.code)?'#f59e0b':'#334155',color:'white'}}>{favs.includes(c.code)?'★ Favorited':'☆ Favorite'}</button>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      {!loading && filtered.length===0 && <p>No countries found.</p>}
+    </div>
+  )
+}
